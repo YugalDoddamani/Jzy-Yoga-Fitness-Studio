@@ -53,10 +53,35 @@ document.querySelectorAll(".whatsapp-link").forEach(link => {
 const year = document.querySelector("#year");
 if (year) year.textContent = String(new Date().getFullYear());
 
-const revealItems = document.querySelectorAll(
-  ".hero-copy,.hero-visual,.class-card,.approach-heading,.value-item,.jasmine-visual,.jasmine-copy,.step-card,.contact-card"
-);
+/* ---------- Reveal on scroll: every heading & body text fades up ---------- */
+const revealSelectors = [
+  "h1","h2","h3","h4","p",".eyebrow",".button",".card-cta",".text-cta",
+  ".class-chips",".value-index",".contact-kicker",".section-footnote"
+];
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// mark text elements as reveal targets
+const revealCandidates = document.querySelectorAll(revealSelectors.join(","));
+revealCandidates.forEach(el => {
+  if (!el.classList.contains("reveal")) el.classList.add("reveal");
+});
+
+// group stagger per parent
+const parents = new Set();
+revealCandidates.forEach(el => parents.add(el.parentElement));
+parents.forEach(parent => {
+  if (!parent) return;
+  const items = parent.querySelectorAll(":scope > .reveal, :scope > * .reveal");
+  // stagger direct-ish children only to avoid huge delays
+});
+
+// assign stagger delays based on position within nearest section/container
+document.querySelectorAll("section, .breath-band, .site-footer, .top-note").forEach(container => {
+  const items = container.querySelectorAll(".reveal");
+  items.forEach((item, index) => {
+    item.style.transitionDelay = (Math.min(index, 8) * 70) + "ms";
+  });
+});
 
 if ("IntersectionObserver" in window && !reduceMotion) {
   document.documentElement.classList.add("reveal-ready");
@@ -67,12 +92,50 @@ if ("IntersectionObserver" in window && !reduceMotion) {
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
 
-  revealItems.forEach((item, index) => {
-    item.style.transitionDelay = (index % 3) * 70 + "ms";
-    observer.observe(item);
-  });
+  document.querySelectorAll(".reveal").forEach(item => observer.observe(item));
 } else {
-  revealItems.forEach(item => item.classList.add("is-visible"));
+  document.querySelectorAll(".reveal").forEach(item => item.classList.add("is-visible"));
+}
+
+/* ---------- Micro-interactions ---------- */
+// ripple on buttons
+document.querySelectorAll(".button, .nav-cta, .card-cta").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    const rect = btn.getBoundingClientRect();
+    const ripple = document.createElement("span");
+    ripple.style.position = "absolute";
+    ripple.style.borderRadius = "50%";
+    ripple.style.pointerEvents = "none";
+    ripple.style.background = "rgba(255,255,255,.45)";
+    ripple.style.width = ripple.style.height = "12px";
+    ripple.style.left = (e.clientX - rect.left - 6) + "px";
+    ripple.style.top = (e.clientY - rect.top - 6) + "px";
+    ripple.style.transform = "scale(0)";
+    ripple.style.transition = "transform .5s ease, opacity .5s ease";
+    ripple.style.opacity = "1";
+    if (getComputedStyle(btn).position === "static") btn.style.position = "relative";
+    btn.style.overflow = "hidden";
+    btn.appendChild(ripple);
+    requestAnimationFrame(() => { ripple.style.transform = "scale(18)"; ripple.style.opacity = "0"; });
+    setTimeout(() => ripple.remove(), 550);
+  });
+});
+
+// parallax-ish hero sparks follow mouse (subtle)
+const hero = document.querySelector(".hero");
+if (hero && !reduceMotion) {
+  hero.addEventListener("mousemove", (e) => {
+    const r = hero.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    document.querySelectorAll(".hero-spark").forEach((s, i) => {
+      const f = i === 0 ? 12 : -10;
+      s.style.transform = `translate(${x*f}px, ${y*f}px)`;
+    });
+  });
+  hero.addEventListener("mouseleave", () => {
+    document.querySelectorAll(".hero-spark").forEach(s => { s.style.transform = ""; });
+  });
 }
