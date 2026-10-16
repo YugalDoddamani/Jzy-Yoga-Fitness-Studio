@@ -150,3 +150,10 @@ img,svg{display:block}a{color:inherit;text-decoration:none}button{font:inherit}
  .mobile-cta a{display:flex;align-items:center;justify-content:space-between;max-width:550px;margin:auto;padding:13px 17px;border-radius:999px;background:var(--lilac-deep);color:white;font-size:11px;font-weight:900;box-shadow:4px 4px 10px #cbc6df,-3px -3px 9px #fff}.mobile-cta a span{font-size:16px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.reveal-ready .hero-copy,.reveal-ready .hero-visual,.reveal-ready .class-card,.reveal-ready .approach-heading,.reveal-ready .value-item,.reveal-ready .jasmine-visual,.reveal-ready .jasmine-copy,.reveal-ready .step-card,.reveal-ready .contact-card{opacity:1;transform:none}}
+
+
+/* Add an approved image inside any image-placeholder container when ready. */
+.image-placeholder .placeholder-image{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  border-radius:inherit;display:block;
+}
