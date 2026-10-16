@@ -347,3 +347,16 @@ img,svg{display:block}a{color:inherit;text-decoration:none}button{font:inherit}
 @media(prefers-reduced-motion:reduce){
   .hero-photo-detail{transform:none}
 }
+
+/* Third image detail for the photography-led hero */
+.hero-photo-stamp{
+  position:absolute;z-index:4;right:-1%;top:57%;display:flex;align-items:center;gap:10px;
+  width:clamp(150px,17vw,205px);padding:8px;border:1px solid #ffffffd9;border-radius:17px;
+  background:rgba(248,247,251,.95);box-shadow:var(--shadow-out);backdrop-filter:blur(12px);
+  transform:rotate(2deg);
+}
+.hero-photo-stamp img{width:55px;height:55px;flex-shrink:0;object-fit:cover;border-radius:11px}
+.hero-photo-stamp span{font-size:7px;line-height:1.65;letter-spacing:.1em;color:var(--muted)}
+.hero-photo-stamp strong{font-size:9px;color:var(--ink)}
+@media(max-width:900px){.hero-photo-stamp{right:-2%;width:160px;top:58%}}
+@media(max-width:680px){.hero-photo-stamp{right:-1%;top:57%;width:145px;gap:7px;padding:6px;border-radius:13px}.hero-photo-stamp img{width:43px;height:43px}.hero-photo-stamp span{font-size:6px}.hero-photo-stamp strong{font-size:8px}}
